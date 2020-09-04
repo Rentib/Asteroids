@@ -1,13 +1,12 @@
 var ship;
 var asteroids = [];
 var lasers = [];
+var windowSize;
 function setup(){
-	var k = min(windowWidth, windowHeight) - 10;
-	createCanvas(k, k);
+	windowSize = min(windowWidth, windowHeight) - 10;
+	createCanvas(windowSize, windowSize);
 	ship = new Ship();
-	for(var i = 0;i < k / 100;i++){
-		asteroids.push(new Asteroid());
-	}
+	spawnAsteroids();
 }
 function draw(){
 	background(0);
@@ -38,10 +37,7 @@ function draw(){
 			}
 		}
 	}
-	if(asteroids.length == 0){
-		for(var i = 0;i < 10;i++)
-			asteroids.push(new Asteroid());
-	}
+	spawnAsteroids();
 }
 function keyPressed(){
 	if(keyCode === LEFT_ARROW){
@@ -62,4 +58,14 @@ function keyReleased(){
 		ship.isRotating = 0.9;
 	if(keyCode === UP_ARROW)
 		ship.isBoosting = 0.99;
+}
+
+function spawnAsteroids(){
+	while(asteroids.length < windowSize / 100){
+		asteroids.push(new Asteroid());
+		var index = asteroids.length - 1;
+		var d = dist(ship.pos.x, ship.pos.y, asteroids[index].pos.x, asteroids[index].pos.y);
+		if(d < 50)
+			asteroids.splice(index, 1);
+	}
 }
